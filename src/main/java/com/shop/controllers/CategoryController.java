@@ -40,6 +40,6 @@ public class CategoryController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable int id) throws DataNotFoundException {
         categoryService.delete(id);
-        return ResponseEntity.ok("Category deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 }

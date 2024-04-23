@@ -1,6 +1,7 @@
 package com.shop.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shop.models.Category;
 import com.shop.models.Color;
 import com.shop.models.Size;
 import lombok.*;
@@ -28,8 +29,8 @@ public class ProductResponse {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("cate_id")
-    private int cateId;
+    @JsonProperty("category")
+    private Category category;
 
     @JsonProperty("product_images")
     private List<ProductImageResponse> productImages;

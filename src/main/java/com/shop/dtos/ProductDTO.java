@@ -28,6 +28,7 @@ public class ProductDTO {
     private String description;
 
     @JsonProperty("cate_id")
+    @Min(value =  0, message = "cateId must be greater than 0")
     private int cateId;
 
     @JsonProperty("sizes")

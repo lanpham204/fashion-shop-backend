@@ -93,7 +93,6 @@ public class ProductService implements IProductService {
     public ProductResponse getProductDetailById(int id) throws DataNotFoundException {
         Product product = getById(id);
         ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
-        productResponse.setCateId(product.getCategory().getId());
         List<ProductImageResponse> productImages = productImageRepository.findByProductId(id)
                 .stream().map(productImage -> modelMapper.map(productImage,ProductImageResponse.class)).toList();
         List<SizeProduct> sizeProducts = sizeProductRepository.findByProductId(id);
@@ -131,13 +130,12 @@ public class ProductService implements IProductService {
     public ProductImage createProductImage(int productId, ProductImageDTO productImageDTO) throws DataNotFoundException {
         Product product = getById(productId);
         List<ProductImage> productImages = productImageRepository.findByProductId(productId);
-        if(productImages.size() >0) {
-            product.setThumbnail(productImages.get(0).getImageUrl());
-        }
         ProductImage productImage = ProductImage.builder()
                 .product(product)
                 .imageUrl(productImageDTO.getImageUrl())
                 .build();
+        productImages.add(productImage);
+        product.setThumbnail(productImages.get(0).getImageUrl());
         return productImageRepository.save(productImage);
     }
 }

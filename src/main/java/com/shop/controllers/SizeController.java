@@ -40,7 +40,8 @@ public class SizeController {
     public ResponseEntity<?> deleteSize(@PathVariable int id) {
         try {
             sizeService.delete(id);
-            return ResponseEntity.ok("delete success");
+            return ResponseEntity.noContent().build();
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -139,7 +139,7 @@ public class OrderController {
     public ResponseEntity<?> deleteOrder(@PathVariable int id) {
         try {
             orderService.delete(id);
-            return ResponseEntity.ok("Delete success");
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

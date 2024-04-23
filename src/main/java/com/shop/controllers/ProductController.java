@@ -95,7 +95,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable("id") int id) throws DataNotFoundException {
         try {
             productService.delete(id);
-            return ResponseEntity.ok("Delete product success");
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

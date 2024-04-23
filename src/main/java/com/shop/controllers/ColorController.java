@@ -54,7 +54,8 @@ public class ColorController {
     public ResponseEntity<?> deleteColor(@PathVariable("id") int id) {
         try {
             colorService.delete(id);
-            return ResponseEntity.ok("Delete success");
+            return ResponseEntity.noContent().build();
+
         } catch (DataNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

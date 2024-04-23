@@ -126,16 +126,5 @@ public class ProductService implements IProductService {
         productRepository.delete(product);
     }
 
-    @Override
-    public ProductImage createProductImage(int productId, ProductImageDTO productImageDTO) throws DataNotFoundException {
-        Product product = getById(productId);
-        List<ProductImage> productImages = productImageRepository.findByProductId(productId);
-        ProductImage productImage = ProductImage.builder()
-                .product(product)
-                .imageUrl(productImageDTO.getImageUrl())
-                .build();
-        productImages.add(productImage);
-        product.setThumbnail(productImages.get(0).getImageUrl());
-        return productImageRepository.save(productImage);
-    }
+
 }

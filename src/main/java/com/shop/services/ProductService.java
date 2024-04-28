@@ -7,7 +7,6 @@ import com.shop.models.*;
 import com.shop.repositories.*;
 import com.shop.response.ProductImageResponse;
 import com.shop.response.ProductResponse;
-import com.shop.response.SizeProductResponse;
 import com.shop.services.interfaces.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,12 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -74,12 +69,16 @@ public class ProductService implements IProductService {
     public List<Product> getAll() {
         return productRepository.findAll();
     }
+
     @Override
     public ProductResponse update(ProductDTO productDTO, int id) throws DataNotFoundException {
         Category category = categoryRepository.findById(productDTO.getCateId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find category with id: " + productDTO.getCateId() ));
         Product product = getById(id);
-        product = modelMapper.map(productDTO, Product.class);
+        product.setName(productDTO.getName());
+        product.setPrice(product.getPrice());
+        product.setCategory(category);
+        product.setDescription(productDTO.getDescription());
         productRepository.save(product);
         return modelMapper.map(product, ProductResponse.class);
     }
@@ -126,5 +125,16 @@ public class ProductService implements IProductService {
         productRepository.delete(product);
     }
 
-
+    @Override
+    public ProductImage createProductImage(int productId, ProductImageDTO productImageDTO) throws DataNotFoundException {
+        Product product = getById(productId);
+        List<ProductImage> productImages = productImageRepository.findByProductId(productId);
+        ProductImage productImage = ProductImage.builder()
+                .product(product)
+                .imageUrl(productImageDTO.getImageUrl())
+                .build();
+        productImages.add(productImage);
+        product.setThumbnail(productImages.get(0).getImageUrl());
+        return productImageRepository.save(productImage);
+    }
 }

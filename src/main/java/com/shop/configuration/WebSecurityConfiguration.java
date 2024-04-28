@@ -55,6 +55,20 @@ public class WebSecurityConfiguration {
                            .requestMatchers(HttpMethod.PUT,String.format("%s/products/**",apiPrefix)).hasRole(Role.ADMIN)
                            .requestMatchers(HttpMethod.DELETE,String.format("%s/products/**",apiPrefix)).hasRole(Role.ADMIN)
 
+                           .requestMatchers(HttpMethod.POST,String.format("%s/product-images/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.PUT,String.format("%s/product-images/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.DELETE,String.format("%s/product-images/**",apiPrefix)).hasRole(Role.ADMIN)
+
+                           .requestMatchers(HttpMethod.GET,String.format("%s/color-products/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.POST,String.format("%s/color-products/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.PUT,String.format("%s/color-products/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.DELETE,String.format("%s/color-products/**",apiPrefix)).hasRole(Role.ADMIN)
+
+                           .requestMatchers(HttpMethod.GET,String.format("%s/size-products/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.POST,String.format("%s/size-products/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.PUT,String.format("%s/size-products/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.DELETE,String.format("%s/size-products/**",apiPrefix)).hasRole(Role.ADMIN)
+
                            .requestMatchers(HttpMethod.GET,String.format("%s/colors/**",apiPrefix)).hasRole(Role.ADMIN)
                            .requestMatchers(HttpMethod.POST,String.format("%s/colors/**",apiPrefix)).hasRole(Role.ADMIN)
                            .requestMatchers(HttpMethod.PUT,String.format("%s/colors/**",apiPrefix)).hasRole(Role.ADMIN)

@@ -10,6 +10,7 @@ import java.util.List;
 public interface IProductImageService {
     ProductImageResponse create(ProductImageDTO productImageDTO) throws DataNotFoundException;
     List<ProductImageResponse> getAll();
+    List<ProductImageResponse> getByProductId(int productId);
     ProductImageResponse update(ProductImageDTO productImageDTO,int id) throws DataNotFoundException;
     ProductImage getById(int id) throws DataNotFoundException;
     void delete(int id) throws DataNotFoundException;

@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -37,6 +38,10 @@ public class ProductImageController {
     public ResponseEntity<?> createProductImage(@PathVariable("product_id") int productId,
                                                  @ModelAttribute("file") MultipartFile file) {
         try {
+            List<ProductImageResponse> productImages = productImageService.getByProductId(productId);
+            if(productImages.size() > ProductImage.MAXIMUM_IMAGES_SIZE) {
+                return ResponseEntity.badRequest().body("You can only upload maximum 5 images");
+            }
             if (file == null || file.isEmpty()) {
                 return ResponseEntity.badRequest().body("File is empty");
             }
@@ -72,6 +77,11 @@ public class ProductImageController {
     @PutMapping(value = "{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProductImage(@PathVariable int id,  @ModelAttribute("file") MultipartFile file) {
         try {
+            ProductImage existingProductImage = productImageService.getById(id);
+            List<ProductImageResponse> productImages = productImageService.getByProductId(existingProductImage.getProduct().getId());
+            if(productImages.size() > ProductImage.MAXIMUM_IMAGES_SIZE) {
+                return ResponseEntity.badRequest().body("You can only upload maximum 5 images");
+            }
             if (file == null || file.isEmpty()) {
                 return ResponseEntity.badRequest().body("File is empty");
             }
@@ -86,7 +96,6 @@ public class ProductImageController {
                 return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                         .body("File must be an image");
             }
-            ProductImage existingProductImage = productImageService.getById(id);
             String filename = storeFile(file);
             ProductImageResponse productImage = productImageService.update(ProductImageDTO.builder()
                     .imageUrl(filename)

@@ -3,7 +3,6 @@ package com.shop.services.interfaces;
 import com.shop.dtos.ColorDTO;
 import com.shop.exceptions.DataNotFoundException;
 import com.shop.models.Color;
-import com.shop.response.ColorResponse;
 
 import java.util.List;
 

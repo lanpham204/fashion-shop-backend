@@ -36,6 +36,11 @@ public class ProductImageService implements IProductImageService {
     public List<ProductImageResponse> getAll() {
         return null;
     }
+    @Override
+    public List<ProductImageResponse> getByProductId(int productId) {
+        return productImageRepository.findByProductId(productId).stream().map(productImage ->
+                modelMapper.map(productImage,ProductImageResponse.class)).toList();
+    }
 
     @Override
     public ProductImageResponse update(ProductImageDTO productImageDTO, int id) throws DataNotFoundException {

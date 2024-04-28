@@ -14,9 +14,9 @@ import lombok.*;
 @Data
 public class ColorProductDTO {
     @JsonProperty("product_id")
-    private Product product;
+    private int productId;
 
     @ManyToOne
     @JsonProperty("color_id")
-    private Color color;
+    private int colorId;
 }

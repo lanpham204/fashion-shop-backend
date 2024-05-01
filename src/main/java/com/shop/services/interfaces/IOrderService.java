@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface IOrderService {
     OrderResponse create(OrderDTO orderDTO) throws DataNotFoundException;
-    Page<OrderResponse> getAll(String keyword, Pageable pageable);
+    Page<OrderResponse> searchOrders(String keyword,PageRequest pageRequest);
     OrderResponse update(OrderDTO orderDTO,int id) throws DataNotFoundException;
     OrderResponse getById(int id) throws DataNotFoundException;
     void delete(int id) throws DataNotFoundException;

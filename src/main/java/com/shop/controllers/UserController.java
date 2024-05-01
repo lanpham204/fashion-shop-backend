@@ -49,10 +49,8 @@ public class UserController {
         try {
             String[] results = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
             String token = results[0];
-            int roleId = Integer.parseInt(results[1]);
             return ResponseEntity.ok(LoginResponse.builder()
                     .token(token)
-                    .roleId(roleId)
                     .build());
 
         } catch (Exception e) {
@@ -107,7 +105,14 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable int id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
-    // Implement other methods for login, update, and delete (consider security)
-    // ...
 }

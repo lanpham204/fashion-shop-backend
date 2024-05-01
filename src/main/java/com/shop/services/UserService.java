@@ -76,7 +76,6 @@ public class UserService implements IUserService {
         authenticationManager.authenticate(authenticationToken);
         String[] result = new String[2];
         result[0] = jwtTokenUtils.generateToken(user);
-        result[1] = String.valueOf(user.getRole().getId());
         return result;
     }
 

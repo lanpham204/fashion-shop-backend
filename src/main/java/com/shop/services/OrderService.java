@@ -84,8 +84,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Page<OrderResponse> getAll(String keyword, Pageable pageable) {
-        return orderRepository.searchOrderByKeyword(keyword, pageable).map(order -> modelMapper.map(order, OrderResponse.class));
+    public Page<OrderResponse> searchOrders(String keyword, PageRequest pageRequest) {
+        return orderRepository.searchOrderByKeyword(keyword, pageRequest).map(order -> modelMapper.map(order, OrderResponse.class));
     }
 
     @Override
@@ -93,8 +93,8 @@ public class OrderService implements IOrderService {
         User existingUser = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot found user with id: " + orderDTO.getUserId()));
         Order existingOrder = modelMapper.map(getById(id), Order.class);
-//        modelMapper.typeMap(OrderDTO.class, Order.class)
-//                .addMappings(modelMapper -> modelMapper.skip(Order::setId));
+        modelMapper.typeMap(OrderDTO.class, Order.class)
+                .addMappings(modelMapper -> modelMapper.skip(Order::setId));
         modelMapper.map(orderDTO, existingOrder);
         orderRepository.save(existingOrder);
         return modelMapper.map(existingOrder, OrderResponse.class);

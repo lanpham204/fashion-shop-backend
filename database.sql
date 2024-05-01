@@ -5,7 +5,7 @@ create table categories (
 CREATE TABLE products (
     id INT NOT NULL AUTO_INCREMENT,
     name nvarchar(100) NOT NULL,
-    thumbnail VARCHAR(255) NOT NULL,
+    thumbnail VARCHAR(255),
     price DECIMAL(10,2) NOT NULL,
     description TEXT NOT NULL,
     cate_id int,

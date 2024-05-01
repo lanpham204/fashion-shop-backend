@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class OrderController {
     private final IOrderService orderService;
     private final ModelMapper modelMapper;
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO, BindingResult result) {
+    public ResponseEntity<?> createOrder( @Valid @RequestBody OrderDTO orderDTO, BindingResult result) {
         try {
             if(result.hasErrors()) {
                 List<String> errosMessages = result.getFieldErrors().stream().map(FieldError::getDefaultMessage
@@ -49,7 +50,6 @@ public class OrderController {
                 return ResponseEntity.badRequest().body(errosMessages);
             }
             OrderResponse orderResponse = orderService.create(orderDTO);
-
             return new ResponseEntity<>(orderResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -91,8 +91,11 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllOrders(@RequestParam(required = false) String keyword, Pageable pageable) {
-        Page<OrderResponse> orderResponsePage = orderService.getAll(keyword, pageable);
+    public ResponseEntity<?> getAllOrders(@RequestParam(value = "keyword", required = false,defaultValue = "") String keyword,
+                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                          @RequestParam(value = "size", defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<OrderResponse> orderResponsePage = orderService.searchOrders(keyword, pageRequest);
         List<OrderResponse> orderResponses = orderResponsePage.getContent();
         int totalPages = orderResponsePage.getTotalPages();
         return new ResponseEntity<>(OrderListResponse.builder()
@@ -121,7 +124,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateOrder(@RequestBody @Valid OrderDTO orderDTO, @PathVariable int id, BindingResult result) {
+    public ResponseEntity<?> updateOrder(@Valid  @RequestBody OrderDTO orderDTO, @PathVariable int id, BindingResult result) {
         try {
             if(result.hasErrors()) {
                 List<String> errosMessages = result.getFieldErrors().stream().map(FieldError::getDefaultMessage

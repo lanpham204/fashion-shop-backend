@@ -30,9 +30,15 @@ public class OrderDetailService implements IOrderDetaiService {
                 .orElseThrow(() -> new DataNotFoundException("(Cannot found product with id: " + orderDetailDTO.getProductId()));
         Order order = orderRepository.findById(orderDetailDTO.getOrderId()).orElseThrow(
                 () -> new DataNotFoundException("Cannot found order with id: "+orderDetailDTO.getOrderId()));
-        modelMapper.typeMap(OrderDetailDTO.class, OrderDetail.class)
-                .addMappings(mapper -> mapper.skip(OrderDetail::setId));
-        OrderDetail orderDetail = modelMapper.map(orderDetailDTO, OrderDetail.class);
+        OrderDetail orderDetail = OrderDetail.builder()
+                .order(order)
+                .product(product)
+                .size(orderDetailDTO.getSize())
+                .color(orderDetailDTO.getColor())
+                .price(orderDetailDTO.getPrice())
+                .quantity(orderDetailDTO.getQuantity())
+                .totalMoney(orderDetailDTO.getTotalMoney())
+                .build();
         orderDetailRepository.save(orderDetail);
         return modelMapper.map(orderDetail, OrderDetailResponse.class);
     }
@@ -51,9 +57,11 @@ public class OrderDetailService implements IOrderDetaiService {
                 () -> new DataNotFoundException("Cannot found order with id: "+orderDetailDTO.getOrderId()));
         OrderDetail orderDetail = orderDetailRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("(Cannot found order detail with id: " + id));
-        modelMapper.typeMap(OrderDetailDTO.class, OrderDetail.class)
-                .addMappings(mapper -> mapper.skip(OrderDetail::setId));
-        modelMapper.map(orderDetailDTO,orderDetail);
+        orderDetail.setQuantity(orderDetailDTO.getQuantity());
+        orderDetail.setTotalMoney(orderDetailDTO.getTotalMoney());
+        order.setTotalMoney(orderDetailDTO.getTotalMoneyOrder());
+        orderRepository.save(order);
+        orderDetailRepository.save(orderDetail);
         return  modelMapper.map(orderDetail, OrderDetailResponse.class);
     }
 

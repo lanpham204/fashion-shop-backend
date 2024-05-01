@@ -28,7 +28,8 @@ public class UserDTO {
 
     @JsonProperty("retype_password")
     private String retypePassword;
-
+    @JsonProperty("is_active")
+    private boolean active;
     @JsonProperty("role_id")
     private Integer roleId;
 }

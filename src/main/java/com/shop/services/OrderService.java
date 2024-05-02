@@ -2,7 +2,6 @@ package com.shop.services;
 
 import com.shop.configuration.VnpayConfig;
 import com.shop.dtos.OrderDTO;
-import com.shop.dtos.ProductDTO;
 import com.shop.exceptions.DataNotFoundException;
 import com.shop.models.*;
 import com.shop.repositories.OrderDetailRepository;
@@ -11,17 +10,13 @@ import com.shop.repositories.ProductRepository;
 import com.shop.repositories.UserRepository;
 import com.shop.response.OrderDetailResponse;
 import com.shop.response.OrderResponse;
-import com.shop.response.UserResponse;
 import com.shop.services.interfaces.IOrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -191,4 +186,26 @@ public class OrderService implements IOrderService {
 //        resp.getWriter().write(gson.toJson(job));
         return paymentUrl;
     }
-}
+
+    @Override
+    public long getCountOrderByDate(Date date) {
+        List<Object> objects = orderRepository.statisticalCountOrderByDay(date);
+        return (long) objects.get(0);
+    }
+
+    @Override
+    public List<Object> getRevenueByDate(Date date) {
+        return orderRepository.statisticalEarningByDay(date);
+    }
+
+    @Override
+    public List<Object> getRevenueByMonth(String month) {
+        return orderRepository.statisticalEarningByMonth(month);
+    }
+
+    @Override
+    public List<Object> getRevenueByYear(String year) {
+        return orderRepository.statisticalEarningByYear(year);
+    }
+
+ }

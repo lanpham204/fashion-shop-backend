@@ -1,8 +1,10 @@
 package com.shop.services;
 
 import com.shop.dtos.CategoryDTO;
+import com.shop.dtos.OrderDTO;
 import com.shop.exceptions.DataNotFoundException;
 import com.shop.models.Category;
+import com.shop.models.Order;
 import com.shop.repositories.CategoryRepository;
 import com.shop.response.CategoryResponse;
 import com.shop.services.interfaces.ICategoryService;
@@ -36,9 +38,11 @@ public class CategoryService implements ICategoryService {
     public CategoryResponse update(CategoryDTO categoryDTO, int id) throws DataNotFoundException {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find category with id: " + id));
-        Category updateCategory = modelMapper.map(categoryDTO, Category.class);
-        categoryRepository.save(updateCategory);
-        return modelMapper.map(updateCategory,CategoryResponse.class);
+        modelMapper.typeMap(CategoryDTO.class, Category.class)
+                .addMappings(modelMapper -> modelMapper.skip(Category::setId));
+        modelMapper.map(categoryDTO, category);
+        categoryRepository.save(category);
+        return modelMapper.map(category,CategoryResponse.class);
     }
 
     @Override

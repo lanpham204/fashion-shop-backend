@@ -13,4 +13,5 @@ public interface IUserService {
     String[] login(String email,String password) throws DataNotFoundException;
     UserResponse updateUser(UserDTO userDTO, int userId) throws DataNotFoundException;
     void deleteUser(int userId);
+    long getCountUsers();
 }

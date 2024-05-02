@@ -101,4 +101,10 @@ public class UserService implements IUserService {
         existingUser.setActive(false);
         userRepository.save(existingUser);
     }
+
+    @Override
+    public long getCountUsers() {
+        List<Object> objects = userRepository.statisticalCountUser();
+        return (long) objects.get(0);
+    }
 }

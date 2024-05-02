@@ -94,6 +94,16 @@ public class UserController {
 
 
     }
+    @GetMapping("/count")
+    public ResponseEntity<?> getStatisticalCountUsers() {
+        try {
+            return ResponseEntity.ok(userService.getCountUsers());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
+    }
 
     @GetMapping("/details")
     public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String authHeader) {

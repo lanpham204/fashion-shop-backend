@@ -147,4 +147,49 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/count/{date}")
+    public ResponseEntity<?> getCountOrderByDate(@PathVariable("date") String date) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            long countOrderByDate = orderService.getCountOrderByDate(dateFormat.parse(date));
+            return ResponseEntity.ok(countOrderByDate);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @GetMapping("/revenue/{date}")
+    public ResponseEntity<?> getRevenueByDate(@PathVariable("date") String date) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            List<Object> revenue = orderService.getRevenueByDate(dateFormat.parse(date));
+            return ResponseEntity.ok(revenue);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @GetMapping("/revenue/month/{month}")
+    public ResponseEntity<?> getRevenueByMonth(@PathVariable("month") String month) {
+        try {
+            List<Object> revenue = orderService.getRevenueByMonth(month);
+            return ResponseEntity.ok(revenue);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+    @GetMapping("/revenue/year/{year}")
+    public ResponseEntity<?> getRevenueByYear(@PathVariable("year") String year) {
+        try {
+            List<Object> revenue = orderService.getRevenueByYear(year);
+            return ResponseEntity.ok(revenue);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
 }

@@ -79,8 +79,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Page<OrderResponse> searchOrders(String keyword, PageRequest pageRequest) {
-        return orderRepository.searchOrderByKeyword(keyword, pageRequest).map(order -> modelMapper.map(order, OrderResponse.class));
+    public Page<OrderResponse> searchOrders(String keyword,OrderStatus status, PageRequest pageRequest) {
+        return orderRepository.searchOrderByKeyword(keyword,status, pageRequest).map(order -> modelMapper.map(order, OrderResponse.class));
     }
 
     @Override
@@ -199,8 +199,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<Object> getRevenueByMonth(String month) {
-        return orderRepository.statisticalEarningByMonth(month);
+    public List<Object> getRevenueByMonth(String month,String year) {
+        return orderRepository.statisticalEarningByMonth(month,year);
     }
 
     @Override
@@ -208,4 +208,9 @@ public class OrderService implements IOrderService {
         return orderRepository.statisticalEarningByYear(year);
     }
 
- }
+    @Override
+    public List<Object> getMonthOfYear() {
+        return orderRepository.getMonthOfYear();
+    }
+
+}

@@ -92,10 +92,11 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<?> getAllOrders(@RequestParam(value = "keyword", required = false,defaultValue = "") String keyword,
+                                          @RequestParam(value = "status", required = false,defaultValue = "") OrderStatus status,
                                           @RequestParam(value = "page", defaultValue = "0") int page,
                                           @RequestParam(value = "size", defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<OrderResponse> orderResponsePage = orderService.searchOrders(keyword, pageRequest);
+        Page<OrderResponse> orderResponsePage = orderService.searchOrders(keyword,status, pageRequest);
         List<OrderResponse> orderResponses = orderResponsePage.getContent();
         int totalPages = orderResponsePage.getTotalPages();
         return new ResponseEntity<>(OrderListResponse.builder()
@@ -164,7 +165,7 @@ public class OrderController {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             List<Object> revenue = orderService.getRevenueByDate(dateFormat.parse(date));
-            return ResponseEntity.ok(revenue);
+            return ResponseEntity.ok(revenue.get(0));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -174,7 +175,8 @@ public class OrderController {
     @GetMapping("/revenue/month/{month}")
     public ResponseEntity<?> getRevenueByMonth(@PathVariable("month") String month) {
         try {
-            List<Object> revenue = orderService.getRevenueByMonth(month);
+            String monthAndYear[] = month.split("-");
+            List<Object> revenue = orderService.getRevenueByMonth(monthAndYear[1],monthAndYear[0]);
             return ResponseEntity.ok(revenue);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -187,6 +189,15 @@ public class OrderController {
         try {
             List<Object> revenue = orderService.getRevenueByYear(year);
             return ResponseEntity.ok(revenue);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+    @GetMapping("/months")
+    public ResponseEntity<?> getMonthOfYear() {
+        try {
+            return ResponseEntity.ok(orderService.getMonthOfYear());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

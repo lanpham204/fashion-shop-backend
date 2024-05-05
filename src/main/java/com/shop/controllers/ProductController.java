@@ -1,4 +1,7 @@
 package com.shop.controllers;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.api.ApiResponse;
 import com.shop.dtos.ProductDTO;
 import com.shop.dtos.ProductImageDTO;
 import com.shop.exceptions.DataNotFoundException;
@@ -24,12 +27,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.DocFlavor;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import com.cloudinary.utils.*;
+
 
 @RestController
 @RequestMapping("${api.prefix}/products")
@@ -37,6 +44,7 @@ import java.util.*;
 public class ProductController {
 
     private final IProductService productService;
+    private final Cloudinary cloudinary;
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result) throws DataNotFoundException {
         try {
@@ -136,7 +144,7 @@ public class ProductController {
                         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                                 .body("File must be an image");
                     }
-                    String filename = storeFile(file);
+                    String filename = saveToCloudinary(file);
                     ProductImage productImage = productService.createProductImage(existingProduct.getId(), ProductImageDTO.builder()
                             .imageUrl(filename).build());
                     productImages.add(productImage);
@@ -147,6 +155,19 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    private String saveToCloudinary(MultipartFile file) throws IOException {
+        if (!isImageFile(file) || file.getOriginalFilename() == null) {
+            throw new IOException("Invalid image format");
+        }
+        Map params = ObjectUtils.asMap(
+                "folder", "fashion-shop-images",
+                "resource_type", "image"
+        );
+        Map result = cloudinary.uploader().upload(file.getBytes(), params);
+        return (String) result.get("secure_url");
+    }
+
     @GetMapping("/images/{imageName}")
     public ResponseEntity<?> viewImage(@PathVariable String imageName) {
         try {
@@ -164,6 +185,7 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+
     }
     private String storeFile(MultipartFile file) throws IOException {
         if (!isImageFile(file) || file.getOriginalFilename() == null) {

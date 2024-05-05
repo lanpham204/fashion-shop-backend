@@ -28,6 +28,11 @@ public class ProductImageService implements IProductImageService {
         modelMapper.typeMap(ProductImageDTO.class, ProductImage.class)
                 .addMappings(mapper -> mapper.skip(ProductImage::setId));
         ProductImage productImage = modelMapper.map(productImageDTO, ProductImage.class);
+        List<ProductImage> productImages = productImageRepository.findByProductId(product.getId());
+        if(productImages.get(0).getImageUrl().equals(productImage.getImageUrl())) {
+            product.setThumbnail(productImageDTO.getImageUrl());
+            productRepository.save(product);
+        }
         productImageRepository.save(productImage);
         return modelMapper.map(productImage, ProductImageResponse.class);
     }
@@ -48,8 +53,14 @@ public class ProductImageService implements IProductImageService {
                 .orElseThrow(() -> new DataNotFoundException("Cannot found product with id :" + productImageDTO.getProductId()));
         ProductImage productImage = productImageRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot found product image with id :" + id));
+        List<ProductImage> productImages = productImageRepository.findByProductId(product.getId());
+        if(productImages.get(0).getImageUrl().equals(productImage.getImageUrl())) {
+            product.setThumbnail(productImageDTO.getImageUrl());
+            productRepository.save(product);
+        }
         productImage.setImageUrl(productImageDTO.getImageUrl());
         productImageRepository.save(productImage);
+
         return modelMapper.map(productImage, ProductImageResponse.class);
     }
 

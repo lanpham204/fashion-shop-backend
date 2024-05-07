@@ -79,6 +79,21 @@ create table order_details (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
+create table ratings (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    product_id int,
+    user_id int,
+    value int,
+    comment nvarchar(200),
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+create table reply_comments (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    rating_id int,
+    comment nvarchar(200),
+    FOREIGN KEY (rating_id) REFERENCES ratings(id) ON DELETE CASCADE
+);
 
 
 

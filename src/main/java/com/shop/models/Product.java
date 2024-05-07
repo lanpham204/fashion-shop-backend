@@ -2,6 +2,7 @@ package com.shop.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.context.event.EventListener;
 
 import java.math.BigDecimal;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
+@EntityListeners(ProductListener.class)
 public class Product {
 
     @Id

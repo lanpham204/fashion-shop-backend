@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 @Builder
 @NoArgsConstructor
+@Getter
+@Setter
 public class ProductListResponse {
     private List<ProductResponse> products;
     private int totalPages;

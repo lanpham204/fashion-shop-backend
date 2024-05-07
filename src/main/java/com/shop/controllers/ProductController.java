@@ -2,6 +2,7 @@ package com.shop.controllers;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.api.ApiResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.shop.dtos.ProductDTO;
 import com.shop.dtos.ProductImageDTO;
 import com.shop.exceptions.DataNotFoundException;
@@ -10,6 +11,7 @@ import com.shop.models.ProductImage;
 import com.shop.response.ProductImageResponse;
 import com.shop.response.ProductListResponse;
 import com.shop.response.ProductResponse;
+import com.shop.services.interfaces.IProductRedisService;
 import com.shop.services.interfaces.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,7 @@ public class ProductController {
 
     private final IProductService productService;
     private final Cloudinary cloudinary;
+    private final IProductRedisService productRedisService;
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDTO productDTO, BindingResult result) throws DataNotFoundException {
         try {
@@ -76,15 +79,22 @@ public class ProductController {
     public ResponseEntity<?> getAllSearchProducts(@RequestParam(value = "cateId", required = false,defaultValue = "0") Integer cateId,
                                                         @RequestParam(value = "keyword", required = false,defaultValue = "") String keyword,
                                                         @RequestParam(value = "page", defaultValue = "0") int page,
-                                                        @RequestParam(value = "size", defaultValue = "10") int size) {
+                                                        @RequestParam(value = "size", defaultValue = "10") int size) throws JsonProcessingException {
+        int totalPage = 0;
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<ProductResponse> products = productService.searchProducts(cateId, keyword, pageRequest);
-        int totalPage = products.getTotalPages();
-        List<ProductResponse> productResponses = products.getContent();
+        ProductListResponse productListResponses = productRedisService.getAllProducts(cateId, keyword, pageRequest);
+        if(productListResponses == null) {
+            Page<ProductResponse> products = productService.searchProducts(cateId, keyword, pageRequest);
+            totalPage = products.getTotalPages();
+            productListResponses = ProductListResponse.builder()
+                    .products(products.getContent())
+                    .totalPages(totalPage)
+                    .build();
+            productRedisService.saveAllProducts(productListResponses,cateId,keyword,pageRequest);
+        }
 
-        return ResponseEntity.ok(ProductListResponse.builder()
-                .products(productResponses)
-                .totalPages(totalPage).build());
+
+        return ResponseEntity.ok(productListResponses);
     }
 
 

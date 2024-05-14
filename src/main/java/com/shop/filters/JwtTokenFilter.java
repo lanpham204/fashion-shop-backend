@@ -58,8 +58,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request,response);
     }
     private boolean isByPassToken(@NotNull HttpServletRequest request) {
+
         final List<Pair<String,String>> bypassTokens = Arrays.asList(
                 Pair.of(apiPrefix+"/products","GET"),
+                Pair.of(apiPrefix+"/ratings","GET"),
                 Pair.of("/swagger-ui/index.html","GET"),
                 Pair.of(apiPrefix+"/categories", "GET"),
                 Pair.of(apiPrefix+"/users/login", "POST"),

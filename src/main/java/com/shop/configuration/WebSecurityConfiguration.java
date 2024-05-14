@@ -86,10 +86,21 @@ public class WebSecurityConfiguration {
                            .requestMatchers(HttpMethod.PUT,String.format("%s/orders/**",apiPrefix)).hasRole(Role.ADMIN)
                            .requestMatchers(HttpMethod.DELETE,String.format("%s/orders/**",apiPrefix)).hasRole(Role.ADMIN)
 
-//                           .requestMatchers(HttpMethod.PUT,String.format("%s/order-details/**",apiPrefix)).hasRole(Role.ADMIN)
-//                           .requestMatchers(HttpMethod.POST,String.format("%s/order-details/**",apiPrefix)).hasAnyRole(Role.USER)
-//                           .requestMatchers(HttpMethod.DELETE,String.format("%s/order-details/**",apiPrefix)).hasRole(Role.ADMIN)
-//                           .requestMatchers(HttpMethod.GET,String.format("%s/order-details/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+                           .requestMatchers(HttpMethod.PUT,String.format("%s/order-details/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.POST,String.format("%s/order-details/**",apiPrefix)).hasAnyRole(Role.USER)
+                           .requestMatchers(HttpMethod.DELETE,String.format("%s/order-details/**",apiPrefix)).hasRole(Role.ADMIN)
+                           .requestMatchers(HttpMethod.GET,String.format("%s/order-details/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+
+                           .requestMatchers(HttpMethod.GET,String.format("%s/ratings/**",apiPrefix)).permitAll()
+                           .requestMatchers(HttpMethod.POST,String.format("%s/ratings/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+                           .requestMatchers(HttpMethod.PUT,String.format("%s/ratings/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+                           .requestMatchers(HttpMethod.DELETE,String.format("%s/ratings/**",apiPrefix)).hasAnyRole(Role.ADMIN)
+
+                           .requestMatchers(HttpMethod.GET,String.format("%s/reply-comments/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+                           .requestMatchers(HttpMethod.POST,String.format("%s/reply-comments/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+                           .requestMatchers(HttpMethod.PUT,String.format("%s/reply-comments/**",apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
+                           .requestMatchers(HttpMethod.DELETE,String.format("%s/reply-comments/**",apiPrefix)).hasAnyRole(Role.ADMIN)
+
                            .anyRequest().authenticated();
 
                 }))

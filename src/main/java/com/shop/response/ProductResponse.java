@@ -38,4 +38,6 @@ public class ProductResponse {
     private List<Size> sizes;
     @JsonProperty("color")
     private List<Color> colors;
+    @JsonProperty("ratings")
+    private List<RatingResponse> ratings;
 }

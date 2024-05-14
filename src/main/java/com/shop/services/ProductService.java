@@ -7,6 +7,7 @@ import com.shop.models.*;
 import com.shop.repositories.*;
 import com.shop.response.ProductImageResponse;
 import com.shop.response.ProductResponse;
+import com.shop.response.RatingResponse;
 import com.shop.services.interfaces.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,7 +28,7 @@ public class ProductService implements IProductService {
     private final ColorProductRepository colorProductRepository;
     private final ColorRepository colorRepository;
     private final SizeRepository sizeRepository;
-
+    private final RatingRepository ratingRepository;
     private final ModelMapper modelMapper;
     @Override
     public ProductResponse create(ProductDTO productDTO) throws DataNotFoundException {
@@ -102,9 +103,12 @@ public class ProductService implements IProductService {
         List<Integer> colorIds = new ArrayList<>();
         colorProducts.stream().forEach(colorProduct -> colorIds.add(colorProduct.getColor().getId()));
         List<Color> colors = colorRepository.findByIds(colorIds);
+        List<RatingResponse> ratings = ratingRepository.findByProductId(product.getId())
+                .stream().map(rating -> modelMapper.map(rating, RatingResponse.class)).toList();
         productResponse.setProductImages(productImages);
         productResponse.setSizes(sizes);
         productResponse.setColors(colors);
+        productResponse.setRatings(ratings);
         return productResponse;
     }
     @Override

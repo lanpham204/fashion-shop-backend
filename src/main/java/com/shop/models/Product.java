@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.context.event.EventListener;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 @Entity(name = "products")
 @NoArgsConstructor
@@ -34,5 +36,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "cate_id")
     private Category category;
-
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<WarehouseProduct> warehouseProducts;
 }
